@@ -71,6 +71,7 @@ export default function App() {
     } else {
       setIsCorrect(false);
     }
+
     setTimeout(() => {
       setFlip(true);
     }, 250);
@@ -111,7 +112,7 @@ export default function App() {
 
         <div key={movies.id}>
           <div className={`${fade ? "fade-in" : "fade-out"}`}>
-            <MoviePoster movies={movies} flip={flip} />
+            <MoviePoster movies={movies} flip={flip} isCorrect={isCorrect} />
             <MovieInfo movies={movies} />
           </div>
           <div className="movie-input">

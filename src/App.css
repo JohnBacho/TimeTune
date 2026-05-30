@@ -40,7 +40,6 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   filter: blur(20px);
-  transform: scale(1.2);
   z-index: 1;
   transition: opacity 0.5s ease;
 }
@@ -54,10 +53,6 @@ body {
 
 .fade-in {
   animation: fadeUp 1s ease forwards;
-}
-
-.fade-out {
-  opacity: 1;
 }
 
 .movie-input input[type="number"],
