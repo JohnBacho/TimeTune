@@ -1,0 +1,19 @@
+.movie-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 20px;
+  gap: 20px;
+  justify-content: center;
+}
+
+.movie-info > h3 {
+  font-family: var(--BodyFont);
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.movie-info > p {
+  font-family: var(--BodyFont);
+  font-size: 20px;
+}
