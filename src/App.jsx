@@ -11,6 +11,7 @@ export default function App() {
   const [score, setScore] = useState(0);
   const [fade, setFade] = useState(true);
   const [flip, setFlip] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   let Color = isCorrect === null ? "white" : isCorrect ? "green" : "red";
 
   const API_TOKEN = import.meta.env.VITE_MY_API_KEY;
@@ -58,6 +59,7 @@ export default function App() {
 
   function handleSubmit(event) {
     event.preventDefault();
+    setIsSubmitting(true);
     const inputValue = event.target.elements[0].value.trim();
     const year = movies?.release_date
       ? movies.release_date.trim().slice(0, 4)
@@ -83,6 +85,7 @@ export default function App() {
       setIsCorrect(null);
       fetchMovies();
       event.target.reset();
+      setIsSubmitting(false);
     }, 3000);
   }
 
@@ -123,8 +126,15 @@ export default function App() {
                 placeholder="Release year..."
                 required
                 autoFocus
+                onChange={(e) => setReleaseYear(e.target.value)}
+                disabled={isSubmitting}
               />
-              <button style={{ border: `2px solid ${Color}` }}>Submit</button>
+              <button
+                style={{ border: `2px solid ${Color}` }}
+                disabled={isSubmitting}
+              >
+                Submit
+              </button>
             </form>
           </div>
         </div>
