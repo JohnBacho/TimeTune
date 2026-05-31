@@ -55,7 +55,7 @@ body {
   animation: fadeUp 1s ease forwards;
 }
 
-.movie-input input[type="number"],
+.movie-input input[type="tel"],
 .movie-input textarea {
   width: 150px;
   padding: 12px;

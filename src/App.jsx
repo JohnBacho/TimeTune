@@ -125,11 +125,12 @@ export default function App() {
             <form onSubmit={handleSubmit}>
               <input
                 style={{ border: `2px solid ${Color}` }}
-                type="number"
+                type="tel"
                 placeholder="Release year..."
                 required
                 autoFocus
                 disabled={isSubmitting}
+                maxlength="4"
               />
               <button
                 style={{ border: `2px solid ${Color}` }}
