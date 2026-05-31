@@ -21,7 +21,7 @@ export default function App() {
       setLoading(true);
       setError(null);
 
-      const randomPage = Math.floor(Math.random() * 100) + 1;
+      const randomPage = Math.floor(Math.random() * 150) + 1;
 
       const URL = `https://api.themoviedb.org/3/discover/movie?language=en-US&page=${randomPage}&include_adult=false`;
       const response = await fetch(URL, {
@@ -40,9 +40,12 @@ export default function App() {
       if (data.results && data.results.length > 0) {
         const randomMovie =
           data.results[Math.floor(Math.random() * data.results.length)];
-
-        setMovies(randomMovie);
-        setFade(true);
+        if (randomMovie.adult === true) {
+          return fetchMovies();
+        } else {
+          setMovies(randomMovie);
+          setFade(true);
+        }
       } else {
         throw new Error("No movies found.");
       }
@@ -126,7 +129,6 @@ export default function App() {
                 placeholder="Release year..."
                 required
                 autoFocus
-                onChange={(e) => setReleaseYear(e.target.value)}
                 disabled={isSubmitting}
               />
               <button
