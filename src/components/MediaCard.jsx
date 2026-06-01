@@ -2,7 +2,7 @@ import "./MediaCard.css";
 import confetti from "canvas-confetti";
 import { useEffect, useRef } from "react";
 
-export default function MediaCard({ media, flip, isCorrect }) {
+export default function MediaCard({ media, flip, isCorrect, isMovie }) {
   const hasFired = useRef(false);
 
   useEffect(() => {
@@ -25,11 +25,22 @@ export default function MediaCard({ media, flip, isCorrect }) {
 
   return (
     <div className="movie-poster-container">
-      <div className={`flip-card ${flip ? "flip-in" : "flip-out"}`}>
+      <div
+        className={`flip-card ${flip ? "flip-in" : "flip-out"}`}
+        style={
+          isMovie
+            ? { aspectRatio: "2 / 3", height: "60vh" }
+            : { aspectRatio: "1 / 1", width: "90vw", maxWidth: "450px" }
+        }
+      >
         <div className="flip-card-front">
           <img
             className="movie-poster"
-            src={`https://image.tmdb.org/t/p/w500${media.poster_path}`}
+            src={
+              isMovie
+                ? `https://image.tmdb.org/t/p/w500${media.poster_path}`
+                : media.poster_path
+            }
             alt={media.title}
           />
         </div>

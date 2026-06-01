@@ -4,10 +4,10 @@ import Score from "../components/Score";
 
 import NavBar from "../components/NavBar";
 import "./Media.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
-export default function Movie() {
-  const [movies, setMovies] = useState(null);
+export default function Music() {
+  const [media, setMedia] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
@@ -15,65 +15,69 @@ export default function Movie() {
   const [fade, setFade] = useState(true);
   const [flip, setFlip] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const mediaRef = useRef(null);
   let Color = isCorrect === null ? "white" : isCorrect ? "green" : "red";
 
-  const API_TOKEN = import.meta.env.VITE_MY_API_KEY;
+  const API_KEY = import.meta.env.VITE_AUDIODB_API_KEY || "2";
 
-  async function fetchMovies() {
+  async function fetchMusic() {
     try {
       setLoading(true);
       setError(null);
+      const randomArtistId = Math.floor(Math.random() * 1500) + 111000;
 
-      const randomPage = Math.floor(Math.random() * 150) + 1;
-
-      const URL = `https://api.themoviedb.org/3/discover/movie?language=en-US&page=${randomPage}&include_adult=false`;
-      const response = await fetch(URL, {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${API_TOKEN}`,
-        },
-      });
+      const URL = `https://www.theaudiodb.com/api/v1/json/${API_KEY}/album.php?i=${randomArtistId}`;
+      const response = await fetch(URL);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
-      if (data.results && data.results.length > 0) {
-        const randomMovie =
-          data.results[Math.floor(Math.random() * data.results.length)];
-        if (randomMovie.adult === true) {
-          return fetchMovies();
-        } else {
-          setMovies(randomMovie);
-          setFade(true);
-        }
+
+      if (data.album && data.album.length > 0) {
+        const randomAlbum =
+          data.album[Math.floor(Math.random() * data.album.length)];
+        const normalizedAlbum = {
+          id: randomAlbum.idAlbum,
+          name: randomAlbum.strAlbum,
+          title: randomAlbum.strAlbum,
+          artist: randomAlbum.strArtist,
+          release_date: randomAlbum.intYearReleased
+            ? String(randomAlbum.intYearReleased)
+            : "",
+          poster_path: randomAlbum.strAlbumThumb || "",
+          ...randomAlbum,
+        };
+
+        mediaRef.current = normalizedAlbum;
+        setMedia(normalizedAlbum);
+        setFade(true);
+        setLoading(false);
       } else {
-        throw new Error("No movies found.");
+        fetchMusic();
       }
     } catch (err) {
       setError(err.message);
-    } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    fetchMovies();
+    fetchMusic();
   }, []);
 
   function handleSubmit(event) {
     event.preventDefault();
     setIsSubmitting(true);
     const inputValue = event.target.elements[0].value.trim();
-    const year = movies?.release_date
-      ? movies.release_date.trim().slice(0, 4)
-      : "";
+    const year = mediaRef.current?.release_date?.toString();
+    console.log("Input Value:", inputValue);  
+    console.log("Actual Year:", year);
 
-    const isCorrect = year === inputValue;
+    const correct = year === inputValue;
 
-    if (isCorrect) {
+    if (correct) {
       setIsCorrect(true);
       setScore((prevScore) => prevScore + 1);
     } else {
@@ -89,23 +93,17 @@ export default function Movie() {
     setTimeout(() => {
       setFlip(false);
       setIsCorrect(null);
-      fetchMovies();
+      fetchMusic();
       event.target.reset();
       setIsSubmitting(false);
     }, 3000);
   }
 
-  {
-    loading ? <p>Loading next movie...</p> : <MediaSection media={movies} />;
-  }
+  if (loading && !media) return <p>Loading next album...</p>;
   if (error) return <p>Error: {error}</p>;
-  if (!movies) return <p>No movie data available.</p>;
+  if (!media) return <p>No music data available.</p>;
 
-  const imageUrl = movies.poster_path
-    ? `https://image.tmdb.org/t/p/w500${movies.poster_path}`
-    : "";
-  
-
+  const imageUrl = media.poster_path || fetchMusic();
 
   return (
     <div className="App">
@@ -117,18 +115,17 @@ export default function Movie() {
             : "none",
         }}
       />
-      
 
       <div className="content">
         <NavBar />
         <Score score={score} />
-        <div key={movies.id}>
+        <div key={media.id}>
           <MediaSection
-            media={movies}
+            media={media}
             fade={fade}
             flip={flip}
             isCorrect={isCorrect}
-            isMovie={true}
+            isMovie={false}
           />
           <GuessForm
             onSubmit={handleSubmit}

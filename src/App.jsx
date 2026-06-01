@@ -3,7 +3,7 @@ import { Suspense, lazy, useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 const Movie = lazy(() => import("./pages/Movie.jsx"));
-const Music = lazy(() => import("./pages/Movie.jsx"));
+const Music = lazy(() => import("./pages/Music.jsx"));
 
 function PageLoader({ onTimeout }) {
   useEffect(() => {

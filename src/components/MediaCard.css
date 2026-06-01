@@ -6,9 +6,7 @@
 
 .flip-card {
   background-color: transparent;
-  height: 60vh;
   perspective: 1000px;
-  aspect-ratio: 2 / 3;
   object-fit: cover;
 }
 
