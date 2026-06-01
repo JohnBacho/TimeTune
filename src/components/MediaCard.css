@@ -6,9 +6,10 @@
 
 .flip-card {
   background-color: transparent;
-  width: 350px;
-  height: 520px;
+  height: 60vh;
   perspective: 1000px;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
 }
 
 .flip-card-front,
@@ -63,10 +64,6 @@
 }
 
 @media screen and (max-width: 768px) {
-  .flip-card {
-    width: 330px;
-    height: 490px;
-  }
   .movie-poster-container {
     padding: 0px;
   }

@@ -1,0 +1,115 @@
+.navWrapper {
+  position: absolute;
+  z-index: 100;
+  width: fit-content;
+  display: flex;
+  margin: auto;
+  align-items: center;
+  justify-content: center;
+  background: rgba(128, 128, 128, 0.215);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  padding: 6px;
+  gap: 2px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.navItem {
+  position: relative;
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  transition:
+    color 0.22s ease,
+    background 0.22s ease;
+  user-select: none;
+  outline: none;
+  white-space: nowrap;
+  text-decoration: none;
+  font-family: "inter", "sans-serif";
+}
+
+.navItem:hover:not(.active) {
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.171);
+}
+
+.navItem.active {
+  color: #5d5d5d;
+  background: #f0ede8;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+}
+
+.navItem.active:hover {
+  background: #fff;
+}
+
+.dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #8c738f;
+  margin-right: 6px;
+  opacity: 0;
+  transform: scale(0);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+}
+
+.navItem.active .dot {
+  opacity: 0.5;
+  transform: scale(1);
+}
+
+@media (pointer: none), (pointer: coarse) {
+  .navWrapper {
+    width: 55%;
+    max-width: 500px;
+    justify-content: space-evenly;
+  }
+
+  .navItem {
+    padding: 12px 11px;
+    flex: 1;
+    text-align: center;
+    font-family: "inter", "sans-serif";
+  }
+  .navItem:hover:not(.active) {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .navItem {
+    padding: 10px 7px;
+    font-size: 14px;
+    font-family: "inter", "sans-serif";
+  }
+
+  .navWrapper {
+    max-width: 500px;
+    justify-content: space-evenly;
+  }
+}

@@ -4,13 +4,6 @@ body {
   color: white;
 }
 
-.score {
-  position: relative;
-  font-size: 28px;
-  font-family: var(--HeaderFont);
-  padding-top: 40px;
-}
-
 .App {
   position: relative;
   max-width: 100%;
@@ -57,10 +50,6 @@ body {
 }
 
 @media screen and (max-width: 768px) {
-  .score {
-    padding-bottom: 20px;
-    padding-top: 60px;
-  }
   .content > h1 {
     font-family: var(--HeaderFont);
     color: var(--text-h);

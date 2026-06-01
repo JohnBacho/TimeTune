@@ -1,0 +1,13 @@
+@media screen and (max-width: 768px) {
+  .score {
+    padding-bottom: 50px;
+  }
+}
+
+.score {
+  position: relative;
+  font-size: 28px;
+  font-family: var(--HeaderFont);
+  padding-top: 110px;
+  padding-bottom: 20px;
+}

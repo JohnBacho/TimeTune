@@ -1,8 +1,8 @@
-import "./MoviePoster.css";
+import "./MediaCard.css";
 import confetti from "canvas-confetti";
 import { useEffect, useRef } from "react";
 
-export default function MoviePoster({ movies, flip, isCorrect }) {
+export default function MediaCard({ media, flip, isCorrect }) {
   const hasFired = useRef(false);
 
   useEffect(() => {
@@ -29,13 +29,13 @@ export default function MoviePoster({ movies, flip, isCorrect }) {
         <div className="flip-card-front">
           <img
             className="movie-poster"
-            src={`https://image.tmdb.org/t/p/w500${movies.poster_path}`}
-            alt={movies.title}
+            src={`https://image.tmdb.org/t/p/w500${media.poster_path}`}
+            alt={media.title}
           />
         </div>
 
         <div className="flip-card-back">
-          <h3>{movies.release_date.trim().slice(0, 4)}</h3>
+          <h3>{media.release_date.trim().slice(0, 4)}</h3>
         </div>
       </div>
     </div>
