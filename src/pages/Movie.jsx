@@ -6,12 +6,11 @@ import NavBar from "../components/NavBar";
 import "./Media.css";
 import React, { useState, useEffect } from "react";
 
-export default function Movie() {
+export default function Movie({ movieScore, setMovieScore }) {
   const [movies, setMovies] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
-  const [score, setScore] = useState(0);
   const [fade, setFade] = useState(true);
   const [flip, setFlip] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -75,7 +74,7 @@ export default function Movie() {
 
     if (isCorrect) {
       setIsCorrect(true);
-      setScore((prevScore) => prevScore + 1);
+      setMovieScore((prevScore) => prevScore + 1);
     } else {
       setIsCorrect(false);
     }
@@ -104,9 +103,8 @@ export default function Movie() {
   const imageUrl = movies.poster_path
     ? `https://image.tmdb.org/t/p/w500${movies.poster_path}`
     : "";
+
   
-
-
   return (
     <div className="App">
       <div
@@ -117,11 +115,10 @@ export default function Movie() {
             : "none",
         }}
       />
-      
 
       <div className="content">
         <NavBar />
-        <Score score={score} />
+        <Score score={movieScore} />
         <div key={movies.id}>
           <MediaSection
             media={movies}

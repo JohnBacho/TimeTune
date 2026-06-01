@@ -61,12 +61,24 @@ const styles = {
 };
 
 export default function App() {
+  const [movieScore, setMovieScore] = useState(0);
+  const [musicScore, setMusicScore] = useState(0);
   return (
     <Router>
       <SuspenseWithTimeout>
         <Routes>
-          <Route path="/" element={<Movie />} />
-          <Route path="/music" element={<Music />} />
+          <Route
+            path="/"
+            element={
+              <Movie movieScore={movieScore} setMovieScore={setMovieScore} />
+            }
+          />
+          <Route
+            path="/music"
+            element={
+              <Music musicScore={musicScore} setMusicScore={setMusicScore} />
+            }
+          />
         </Routes>
       </SuspenseWithTimeout>
     </Router>

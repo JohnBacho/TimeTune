@@ -6,12 +6,11 @@ import NavBar from "../components/NavBar";
 import "./Media.css";
 import React, { useState, useEffect, useRef } from "react";
 
-export default function Music() {
+export default function Music({ musicScore, setMusicScore }) {
   const [media, setMedia] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
-  const [score, setScore] = useState(0);
   const [fade, setFade] = useState(true);
   const [flip, setFlip] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -79,7 +78,7 @@ export default function Music() {
 
     if (correct) {
       setIsCorrect(true);
-      setScore((prevScore) => prevScore + 1);
+      setMusicScore((prevScore) => prevScore + 1);
     } else {
       setIsCorrect(false);
     }
@@ -118,7 +117,7 @@ export default function Music() {
 
       <div className="content">
         <NavBar />
-        <Score score={score} />
+        <Score score={musicScore} />
         <div key={media.id}>
           <MediaSection
             media={media}
