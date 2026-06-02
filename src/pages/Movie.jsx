@@ -23,7 +23,7 @@ export default function Movie({ movieScore, setMovieScore }) {
       setLoading(true);
       setError(null);
 
-      const randomPage = Math.floor(Math.random() * 150) + 1;
+      const randomPage = Math.floor(Math.random() * 500) + 1;
 
       const URL = `https://api.themoviedb.org/3/discover/movie?language=en-US&page=${randomPage}&include_adult=false`;
       const response = await fetch(URL, {
@@ -42,7 +42,11 @@ export default function Movie({ movieScore, setMovieScore }) {
       if (data.results && data.results.length > 0) {
         const randomMovie =
           data.results[Math.floor(Math.random() * data.results.length)];
-        if (randomMovie.adult === true) {
+        if (
+          randomMovie.adult === true ||
+          randomMovie.softcore === true ||
+          randomMovie.vote_count < 350
+        ) {
           return fetchMovies();
         } else {
           setMovies(randomMovie);
@@ -104,7 +108,6 @@ export default function Movie({ movieScore, setMovieScore }) {
     ? `https://image.tmdb.org/t/p/w500${movies.poster_path}`
     : "";
 
-  
   return (
     <div className="App">
       <div

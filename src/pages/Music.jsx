@@ -23,7 +23,7 @@ export default function Music({ musicScore, setMusicScore }) {
     try {
       setLoading(true);
       setError(null);
-      const randomArtistId = Math.floor(Math.random() * 1500) + 111000;
+      const randomArtistId = Math.floor(Math.random() * 1500) + 111200;
 
       const URL = `https://www.theaudiodb.com/api/v1/json/${API_KEY}/album.php?i=${randomArtistId}`;
       const response = await fetch(URL);
@@ -49,6 +49,18 @@ export default function Music({ musicScore, setMusicScore }) {
           ...randomAlbum,
         };
 
+        if (!randomAlbum.strAlbumThumb) {
+          return fetchMusic();
+        }
+        if (calculatePopularityScore(randomAlbum) < 50) {
+          return fetchMusic();
+        }
+        if (
+          randomAlbum.intYearReleased == 0 ||
+          randomAlbum.intYearReleased == null
+        ) {
+          return fetchMusic();
+        }
         mediaRef.current = normalizedAlbum;
         setMedia(normalizedAlbum);
         setFade(true);
@@ -62,6 +74,22 @@ export default function Music({ musicScore, setMusicScore }) {
     }
   }
 
+  function calculatePopularityScore(album) {
+    let score = 0;
+
+    score += Number(album.intScore || 0) * 2;
+    score += Number(album.intScoreVotes || 0) * 5;
+
+    if (album.strWikipediaID) score += 20;
+    if (album.strDiscogsID) score += 10;
+    if (album.strDescription) score += 10;
+    if (album.strReview) score += 10;
+
+    if (album.strArtist) score += 15;
+
+    return score;
+  }
+
   useEffect(() => {
     fetchMusic();
   }, []);
@@ -71,8 +99,6 @@ export default function Music({ musicScore, setMusicScore }) {
     setIsSubmitting(true);
     const inputValue = event.target.elements[0].value.trim();
     const year = mediaRef.current?.release_date?.toString();
-    console.log("Input Value:", inputValue);  
-    console.log("Actual Year:", year);
 
     const correct = year === inputValue;
 
@@ -102,7 +128,7 @@ export default function Music({ musicScore, setMusicScore }) {
   if (error) return <p>Error: {error}</p>;
   if (!media) return <p>No music data available.</p>;
 
-  const imageUrl = media.poster_path || fetchMusic();
+  const imageUrl = media.poster_path;
 
   return (
     <div className="App">

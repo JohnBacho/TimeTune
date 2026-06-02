@@ -4,6 +4,7 @@
   align-items: center;
   margin-bottom: 40px;
   justify-content: center;
+  text-wrap: pretty;
 }
 
 .movie-info > h3 {
