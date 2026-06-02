@@ -8,20 +8,18 @@ import React, { useState, useEffect, useRef } from "react";
 
 export default function Music({ musicScore, setMusicScore }) {
   const [media, setMedia] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [nextMedia, setNextMedia] = useState(null);
   const [error, setError] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const [fade, setFade] = useState(true);
   const [flip, setFlip] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const mediaRef = useRef(null);
   let Color = isCorrect === null ? "white" : isCorrect ? "green" : "red";
 
   const API_KEY = import.meta.env.VITE_AUDIODB_API_KEY || "2";
 
   async function fetchMusic() {
     try {
-      setLoading(true);
       setError(null);
       const randomArtistId = Math.floor(Math.random() * 1500) + 111200;
 
@@ -61,16 +59,12 @@ export default function Music({ musicScore, setMusicScore }) {
         ) {
           return fetchMusic();
         }
-        mediaRef.current = normalizedAlbum;
-        setMedia(normalizedAlbum);
-        setFade(true);
-        setLoading(false);
+        return normalizedAlbum;
       } else {
-        fetchMusic();
+        return fetchMusic();
       }
     } catch (err) {
       setError(err.message);
-      setLoading(false);
     }
   }
 
@@ -91,14 +85,22 @@ export default function Music({ musicScore, setMusicScore }) {
   }
 
   useEffect(() => {
-    fetchMusic();
+    async function loadMusic() {
+      const current = await fetchMusic();
+      const next = await fetchMusic();
+
+      setMedia(current);
+      setNextMedia(next);
+    }
+
+    loadMusic();
   }, []);
 
   function handleSubmit(event) {
     event.preventDefault();
     setIsSubmitting(true);
     const inputValue = event.target.elements[0].value.trim();
-    const year = mediaRef.current?.release_date?.toString();
+    const year = media?.release_date?.toString();
 
     const correct = year === inputValue;
 
@@ -114,19 +116,21 @@ export default function Music({ musicScore, setMusicScore }) {
     }, 250);
     setTimeout(() => {
       setFade(false);
-    }, 2500);
-    setTimeout(() => {
       setFlip(false);
+    }, 2500);
+    setTimeout(async () => {
+      setFade(true);
       setIsCorrect(null);
-      fetchMusic();
+      setMedia(nextMedia);
       event.target.reset();
       setIsSubmitting(false);
+      const freshAlbum = await fetchMusic();
+      setNextMedia(freshAlbum);
     }, 3000);
   }
 
-  if (loading && !media) return <p>Loading next album...</p>;
   if (error) return <p>Error: {error}</p>;
-  if (!media) return <p>No music data available.</p>;
+  if (!media) return <p>Loading...</p>;
 
   const imageUrl = media.poster_path;
 

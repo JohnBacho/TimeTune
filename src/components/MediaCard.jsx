@@ -26,12 +26,13 @@ export default function MediaCard({ media, flip, isCorrect, isMovie }) {
   return (
     <div className="movie-poster-container">
       <div
-        className={`flip-card ${flip ? "flip-in" : "flip-out"}`}
-        style={
-          isMovie
+        className={`flip-card ${flip ? "flip-in" : ""}`}
+        style={{
+          ...(isMovie
             ? { aspectRatio: "2 / 3", height: "60vh" }
-            : { aspectRatio: "1 / 1", width: "90vw", maxWidth: "450px" }
-        }
+            : { aspectRatio: "1 / 1", width: "90vw", maxWidth: "450px" }),
+          transform: flip ? "" : "rotateY(0deg)",
+        }}
       >
         <div className="flip-card-front">
           <img

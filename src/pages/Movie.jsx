@@ -8,7 +8,7 @@ import React, { useState, useEffect } from "react";
 
 export default function Movie({ movieScore, setMovieScore }) {
   const [movies, setMovies] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [nextMovies, setNextMovies] = useState(null);
   const [error, setError] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const [fade, setFade] = useState(true);
@@ -20,7 +20,6 @@ export default function Movie({ movieScore, setMovieScore }) {
 
   async function fetchMovies() {
     try {
-      setLoading(true);
       setError(null);
 
       const randomPage = Math.floor(Math.random() * 500) + 1;
@@ -49,21 +48,26 @@ export default function Movie({ movieScore, setMovieScore }) {
         ) {
           return fetchMovies();
         } else {
-          setMovies(randomMovie);
-          setFade(true);
+          return randomMovie;
         }
       } else {
         throw new Error("No movies found.");
       }
     } catch (err) {
       setError(err.message);
-    } finally {
-      setLoading(false);
     }
   }
 
   useEffect(() => {
-    fetchMovies();
+    async function loadMovie() {
+      const current = await fetchMovies();
+      const next = await fetchMovies();
+
+      setMovies(current);
+      setNextMovies(next);
+    }
+
+    loadMovie();
   }, []);
 
   function handleSubmit(event) {
@@ -88,21 +92,22 @@ export default function Movie({ movieScore, setMovieScore }) {
     }, 250);
     setTimeout(() => {
       setFade(false);
-    }, 2500);
-    setTimeout(() => {
       setFlip(false);
+    }, 2500);
+    setTimeout(async () => {
+      setFade(true);
       setIsCorrect(null);
-      fetchMovies();
+      setMovies(nextMovies);
+
       event.target.reset();
       setIsSubmitting(false);
+      const freshMovie = await fetchMovies();
+      setNextMovies(freshMovie);
     }, 3000);
   }
 
-  {
-    loading ? <p>Loading next movie...</p> : <MediaSection media={movies} />;
-  }
   if (error) return <p>Error: {error}</p>;
-  if (!movies) return <p>No movie data available.</p>;
+  if (!movies) return <p>Loading...</p>;
 
   const imageUrl = movies.poster_path
     ? `https://image.tmdb.org/t/p/w500${movies.poster_path}`
