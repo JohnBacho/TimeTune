@@ -38,7 +38,6 @@ export default function Music({ musicScore, setMusicScore }) {
         let startIndex = Math.floor(Math.random() * data.album.length);
         for (let i = 0; i < data.album.length; i++) {
           const randomAlbum = data.album[(startIndex + i) % data.album.length];
-          console.log(randomAlbum);
           if (
             calculatePopularityScore(randomAlbum) < 50 ||
             randomAlbum.intYearReleased == 0 ||

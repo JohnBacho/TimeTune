@@ -52,13 +52,10 @@ export default function tv({ tvScore, settvScore }) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
       const data = await res.json();
-      console.log(data);
       if (data.data && data.data.length > 0) {
         let startIndex = Math.floor(Math.random() * data.data.length);
-        console.log(data.data.length);
         for (let i = 0; i < data.data.length; i++) {
           const randomtv = data.data[(startIndex + i) % data.data.length];
-          console.log(randomtv);
           if (
             randomtv.image === null ||
             randomtv.year === null ||

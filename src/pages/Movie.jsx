@@ -47,7 +47,6 @@ export default function Movie({ movieScore, setMovieScore }) {
         for (let i = 0; i < data.results.length; i++) {
           const randomMovie =
             data.results[(startIndex + i) % data.results.length];
-          console.log(randomMovie);
 
           if (
             randomMovie.adult === true ||
