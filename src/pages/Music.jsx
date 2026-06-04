@@ -40,22 +40,15 @@ export default function Music({ musicScore, setMusicScore }) {
           name: randomAlbum.strAlbum,
           title: randomAlbum.strAlbum,
           artist: randomAlbum.strArtist,
-          release_date: randomAlbum.intYearReleased
-            ? String(randomAlbum.intYearReleased)
-            : "",
+          release_date: String(randomAlbum.intYearReleased),
           poster_path: randomAlbum.strAlbumThumb || "",
           ...randomAlbum,
         };
-
-        if (!randomAlbum.strAlbumThumb) {
-          return fetchMusic();
-        }
-        if (calculatePopularityScore(randomAlbum) < 50) {
-          return fetchMusic();
-        }
         if (
+          calculatePopularityScore(randomAlbum) < 50 ||
           randomAlbum.intYearReleased == 0 ||
-          randomAlbum.intYearReleased == null
+          randomAlbum.intYearReleased == null ||
+          !randomAlbum.strAlbumThumb
         ) {
           return fetchMusic();
         }

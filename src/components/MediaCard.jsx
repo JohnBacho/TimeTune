@@ -29,7 +29,7 @@ export default function MediaCard({ media, flip, isCorrect, isMovie }) {
         className={`flip-card ${flip ? "flip-in" : ""}`}
         style={{
           ...(isMovie
-            ? { aspectRatio: "2 / 3", height: "60vh" }
+            ? { aspectRatio: "2 / 3", height: "58vh"}
             : { aspectRatio: "1 / 1", width: "90vw", maxWidth: "450px" }),
           transform: flip ? "" : "rotateY(0deg)",
         }}
@@ -37,17 +37,13 @@ export default function MediaCard({ media, flip, isCorrect, isMovie }) {
         <div className="flip-card-front">
           <img
             className="movie-poster"
-            src={
-              isMovie
-                ? `https://image.tmdb.org/t/p/w500${media.poster_path}`
-                : media.poster_path
-            }
-            alt={media.title}
+            src={media.poster_path}
+            alt={media.name}
           />
         </div>
 
         <div className="flip-card-back">
-          <h3>{media.release_date.trim().slice(0, 4)}</h3>
+          <h3>{media.release_date}</h3>
         </div>
       </div>
     </div>

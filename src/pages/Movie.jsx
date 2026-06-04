@@ -41,6 +41,14 @@ export default function Movie({ movieScore, setMovieScore }) {
       if (data.results && data.results.length > 0) {
         const randomMovie =
           data.results[Math.floor(Math.random() * data.results.length)];
+        const normalizedMovie = {
+          id: randomMovie.id,
+          name: randomMovie.title,
+          release_date: randomMovie.release_date.trim().slice(0, 4),
+          poster_path:
+            "https://image.tmdb.org/t/p/w500" + randomMovie.poster_path,
+          rating: randomMovie.vote_average,
+        };
         if (
           randomMovie.adult === true ||
           randomMovie.softcore === true ||
@@ -48,7 +56,7 @@ export default function Movie({ movieScore, setMovieScore }) {
         ) {
           return fetchMovies();
         } else {
-          return randomMovie;
+          return normalizedMovie;
         }
       } else {
         throw new Error("No movies found.");
