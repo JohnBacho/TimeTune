@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 
 const navItems = [
   { name: "Movie", path: "/" },
-  { name: "TV ", path: "/tv" },
+  { name: "Shows", path: "/Shows" },
   { name: "Music", path: "/music" },
 ];
 

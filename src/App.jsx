@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 const Movie = lazy(() => import("./pages/Movie.jsx"));
 const Music = lazy(() => import("./pages/Music.jsx"));
-const Tv = lazy(() => import("./pages/TV.jsx"));
+const Tv = lazy(() => import("./pages/Shows.jsx"));
 
 function PageLoader({ onTimeout }) {
   useEffect(() => {
@@ -81,7 +81,10 @@ export default function App() {
               <Music musicScore={musicScore} setMusicScore={setMusicScore} />
             }
           />
-          <Route path="/tv" element={<Tv tvScore={tvScore} settvScore={setTvScore} />} />
+          <Route
+            path="/Shows"
+            element={<Tv tvScore={tvScore} settvScore={setTvScore} />}
+          />
         </Routes>
       </SuspenseWithTimeout>
     </Router>

@@ -1,6 +1,7 @@
 import MediaSection from "../components/MediaSection";
 import GuessForm from "../components/GuessForm";
 import Score from "../components/Score";
+import Spinner from "../components/Spinner";
 
 import NavBar from "../components/NavBar";
 import "./Media.css";
@@ -14,6 +15,7 @@ export default function Movie({ movieScore, setMovieScore }) {
   const [fade, setFade] = useState(true);
   const [flip, setFlip] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoadingNext, setIsLoadingNext] = useState(false);
   let Color = isCorrect === null ? "white" : isCorrect ? "green" : "red";
 
   const API_TOKEN = import.meta.env.VITE_MY_API_KEY;
@@ -111,6 +113,10 @@ export default function Movie({ movieScore, setMovieScore }) {
       setFlip(false);
     }, 2500);
     setTimeout(async () => {
+      if (!nextMovies) {
+        setIsLoadingNext(true);
+        return;
+      }
       setFade(true);
       setIsCorrect(null);
       setMovies(nextMovies);
@@ -122,8 +128,21 @@ export default function Movie({ movieScore, setMovieScore }) {
     }, 3000);
   }
 
+  useEffect(() => {
+    if (isLoadingNext && nextMovies) {
+      setIsLoadingNext(false);
+      setFade(true);
+      setIsCorrect(null);
+      setMovies(nextMovies);
+      setNextMovies(null);
+      setIsSubmitting(false);
+
+      fetchMovies().then(setNextMovies);
+    }
+  }, [nextMovies, isLoadingNext]);
+
   if (error) return <p>Error: {error}</p>;
-  if (!movies) return <p>Loading...</p>;
+  if (!movies) return <Spinner />;
 
   const imageUrl = movies.poster_path
     ? `https://image.tmdb.org/t/p/w500${movies.poster_path}`

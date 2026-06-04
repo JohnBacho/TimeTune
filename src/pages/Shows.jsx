@@ -1,7 +1,7 @@
 import MediaSection from "../components/MediaSection";
 import GuessForm from "../components/GuessForm";
 import Score from "../components/Score";
-
+import Spinner from "../components/Spinner";
 import NavBar from "../components/NavBar";
 import "./Media.css";
 import React, { useState, useEffect } from "react";
@@ -14,6 +14,7 @@ export default function tv({ tvScore, settvScore }) {
   const [fade, setFade] = useState(true);
   const [flip, setFlip] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoadingNext, setIsLoadingNext] = useState(false);
   let Color = isCorrect === null ? "white" : isCorrect ? "green" : "red";
 
   let cachedToken = null;
@@ -51,15 +52,17 @@ export default function tv({ tvScore, settvScore }) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
       const data = await res.json();
+      console.log(data);
       if (data.data && data.data.length > 0) {
         let startIndex = Math.floor(Math.random() * data.data.length);
+        console.log(data.data.length);
         for (let i = 0; i < data.data.length; i++) {
           const randomtv = data.data[(startIndex + i) % data.data.length];
           console.log(randomtv);
           if (
             randomtv.image === null ||
             randomtv.year === null ||
-            randomtv.score < 500 ||
+            randomtv.score < 350 ||
             randomtv.name === "WWE Superstar Ink"
           ) {
             continue;
@@ -97,37 +100,53 @@ export default function tv({ tvScore, settvScore }) {
     event.preventDefault();
     setIsSubmitting(true);
     const inputValue = event.target.elements[0].value.trim();
-    const year = tvs.release_date;
+    const isCorrect = tvs.release_date === inputValue;
 
-    const isCorrect = year === inputValue;
     if (isCorrect) {
       setIsCorrect(true);
-      settvScore((prevScore) => prevScore + 1);
+      settvScore((prev) => prev + 1);
     } else {
       setIsCorrect(false);
     }
 
-    setTimeout(() => {
-      setFlip(true);
-    }, 250);
+    setTimeout(() => setFlip(true), 250);
     setTimeout(() => {
       setFade(false);
       setFlip(false);
     }, 2500);
+
     setTimeout(async () => {
+      if (!nexttvs) {
+        setIsLoadingNext(true);
+        return;
+      }
       setFade(true);
       setIsCorrect(null);
       settvs(nexttvs);
-
+      setNexttvs(null);
       event.target.reset();
       setIsSubmitting(false);
-      const freshtv = await fetchtvs();
-      setNexttvs(freshtv);
+
+      const fresh = await fetchtvs();
+      setNexttvs(fresh);
     }, 3000);
   }
 
+  useEffect(() => {
+    if (isLoadingNext && nexttvs) {
+      setIsLoadingNext(false);
+      setFade(true);
+      setIsCorrect(null);
+      settvs(nexttvs);
+      setNexttvs(null);
+      setIsSubmitting(false);
+
+      fetchtvs().then(setNexttvs);
+    }
+  }, [nexttvs, isLoadingNext]);
+
   if (error) return <p>Error: {error}</p>;
-  if (!tvs) return <p>Loading...</p>;
+  if (!tvs) return <Spinner />;
 
   return (
     <div className="App">

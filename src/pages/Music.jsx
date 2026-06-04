@@ -1,6 +1,7 @@
 import MediaSection from "../components/MediaSection";
 import GuessForm from "../components/GuessForm";
 import Score from "../components/Score";
+import Spinner from "../components/Spinner";
 
 import NavBar from "../components/NavBar";
 import "./Media.css";
@@ -14,6 +15,7 @@ export default function Music({ musicScore, setMusicScore }) {
   const [fade, setFade] = useState(true);
   const [flip, setFlip] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoadingNext, setIsLoadingNext] = useState(false);
   let Color = isCorrect === null ? "white" : isCorrect ? "green" : "red";
 
   const API_KEY = import.meta.env.VITE_AUDIODB_API_KEY || "2";
@@ -116,6 +118,10 @@ export default function Music({ musicScore, setMusicScore }) {
       setFlip(false);
     }, 2500);
     setTimeout(async () => {
+      if (!nextMedia) {
+        setIsLoadingNext(true);
+        return;
+      }
       setFade(true);
       setIsCorrect(null);
       setMedia(nextMedia);
@@ -126,8 +132,21 @@ export default function Music({ musicScore, setMusicScore }) {
     }, 3000);
   }
 
+  useEffect(() => {
+    if (isLoadingNext && nextMedia) {
+      setIsLoadingNext(false);
+      setFade(true);
+      setIsCorrect(null);
+      setMedia(nextMedia);
+      setNextMedia(null);
+      setIsSubmitting(false);
+
+      fetchMusic().then(setNextMedia);
+    }
+  }, [nextMedia, isLoadingNext]);
+
   if (error) return <p>Error: {error}</p>;
-  if (!media) return <p>Loading...</p>;
+  if (!media) return <Spinner />;
 
   const imageUrl = media.poster_path;
 
