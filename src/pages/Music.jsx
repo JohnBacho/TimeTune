@@ -33,26 +33,30 @@ export default function Music({ musicScore, setMusicScore }) {
       const data = await response.json();
 
       if (data.album && data.album.length > 0) {
-        const randomAlbum =
-          data.album[Math.floor(Math.random() * data.album.length)];
-        const normalizedAlbum = {
-          id: randomAlbum.idAlbum,
-          name: randomAlbum.strAlbum,
-          title: randomAlbum.strAlbum,
-          artist: randomAlbum.strArtist,
-          release_date: String(randomAlbum.intYearReleased),
-          poster_path: randomAlbum.strAlbumThumb || "",
-          ...randomAlbum,
-        };
-        if (
-          calculatePopularityScore(randomAlbum) < 50 ||
-          randomAlbum.intYearReleased == 0 ||
-          randomAlbum.intYearReleased == null ||
-          !randomAlbum.strAlbumThumb
-        ) {
-          return fetchMusic();
+        let startIndex = Math.floor(Math.random() * data.album.length);
+        for (let i = 0; i < data.album.length; i++) {
+          const randomAlbum = data.album[(startIndex + i) % data.album.length];
+          console.log(randomAlbum);
+          if (
+            calculatePopularityScore(randomAlbum) < 50 ||
+            randomAlbum.intYearReleased == 0 ||
+            randomAlbum.intYearReleased == null ||
+            !randomAlbum.strAlbumThumb
+          ) {
+            continue;
+          }
+          const normalizedAlbum = {
+            id: randomAlbum.idAlbum,
+            name: randomAlbum.strAlbum,
+            title: randomAlbum.strAlbum,
+            artist: randomAlbum.strArtist,
+            release_date: String(randomAlbum.intYearReleased),
+            poster_path: randomAlbum.strAlbumThumb || "",
+            ...randomAlbum,
+          };
+          return normalizedAlbum;
         }
-        return normalizedAlbum;
+        return fetchMusic();
       } else {
         return fetchMusic();
       }

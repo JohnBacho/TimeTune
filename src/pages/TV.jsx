@@ -16,20 +16,28 @@ export default function tv({ tvScore, settvScore }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   let Color = isCorrect === null ? "white" : isCorrect ? "green" : "red";
 
+  let cachedToken = null;
+
+  async function getToken() {
+    if (cachedToken) return cachedToken;
+    const res = await fetch("https://api4.thetvdb.com/v4/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ apikey: import.meta.env.VITE_MY_API_KEY_TV }),
+    });
+    const {
+      data: { token },
+    } = await res.json();
+    cachedToken = token;
+    return token;
+  }
+
   async function fetchtvs() {
     try {
       setError(null);
 
-      const randomPage = Math.floor(Math.random() * 25) + 1;
-      const loginRes = await fetch("https://api4.thetvdb.com/v4/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ apikey: import.meta.env.VITE_MY_API_KEY_TV }),
-      });
-      const {
-        data: { token },
-      } = await loginRes.json();
-
+      const randomPage = Math.floor(Math.random() * 70) + 1;
+      const token = await getToken();
       const URL = `https://api4.thetvdb.com/v4/series/filter?country=usa&lang=eng&sort=score&sortType=desc&page=${randomPage}`;
 
       const res = await fetch(URL, {
@@ -44,25 +52,29 @@ export default function tv({ tvScore, settvScore }) {
       }
       const data = await res.json();
       if (data.data && data.data.length > 0) {
-        const randomtv =
-          data.data[Math.floor(Math.random() * data.data.length)];
-        if (
-          randomtv.image === null ||
-          randomtv.year === null ||
-          randomtv.score < 500
-        ) {
-          return fetchtvs();
+        let startIndex = Math.floor(Math.random() * data.data.length);
+        for (let i = 0; i < data.data.length; i++) {
+          const randomtv = data.data[(startIndex + i) % data.data.length];
+          console.log(randomtv);
+          if (
+            randomtv.image === null ||
+            randomtv.year === null ||
+            randomtv.score < 500 ||
+            randomtv.name === "WWE Superstar Ink"
+          ) {
+            continue;
+          }
+          const normalizedtv = {
+            id: randomtv.id,
+            name: randomtv.name,
+            release_date: randomtv.year,
+            poster_path: randomtv.image,
+          };
+          return normalizedtv;
         }
-        console.log(randomtv);
-        const normalizedtv = {
-          id: randomtv.id,
-          name: randomtv.name,
-          release_date: randomtv.year,
-          poster_path: randomtv.image,
-        };
-        return normalizedtv;
+        return fetchtvs();
       } else {
-        throw new Error("No tvs found.");
+        return fetchtvs();
       }
     } catch (err) {
       setError(err.message);

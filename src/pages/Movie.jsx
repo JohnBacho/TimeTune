@@ -21,6 +21,7 @@ export default function Movie({ movieScore, setMovieScore }) {
   async function fetchMovies() {
     try {
       setError(null);
+      var vaildMovie = false;
 
       const randomPage = Math.floor(Math.random() * 500) + 1;
 
@@ -38,28 +39,35 @@ export default function Movie({ movieScore, setMovieScore }) {
       }
 
       const data = await response.json();
+
       if (data.results && data.results.length > 0) {
-        const randomMovie =
-          data.results[Math.floor(Math.random() * data.results.length)];
-        const normalizedMovie = {
-          id: randomMovie.id,
-          name: randomMovie.title,
-          release_date: randomMovie.release_date.trim().slice(0, 4),
-          poster_path:
-            "https://image.tmdb.org/t/p/w500" + randomMovie.poster_path,
-          rating: randomMovie.vote_average,
-        };
-        if (
-          randomMovie.adult === true ||
-          randomMovie.softcore === true ||
-          randomMovie.vote_count < 350
-        ) {
-          return fetchMovies();
-        } else {
-          return normalizedMovie;
+        let startIndex = Math.floor(Math.random() * data.results.length);
+        for (let i = 0; i < data.results.length; i++) {
+          const randomMovie =
+            data.results[(startIndex + i) % data.results.length];
+          console.log(randomMovie);
+
+          if (
+            randomMovie.adult === true ||
+            randomMovie.softcore === true ||
+            randomMovie.vote_count < 350
+          ) {
+            continue;
+          } else {
+            const normalizedMovie = {
+              id: randomMovie.id,
+              name: randomMovie.title,
+              release_date: randomMovie.release_date.trim().slice(0, 4),
+              poster_path:
+                "https://image.tmdb.org/t/p/w500" + randomMovie.poster_path,
+              rating: randomMovie.vote_average,
+            };
+            return normalizedMovie;
+          }
         }
+        return fetchMovies();
       } else {
-        throw new Error("No movies found.");
+        return fetchMovies();
       }
     } catch (err) {
       setError(err.message);
