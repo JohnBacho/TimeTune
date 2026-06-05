@@ -90,8 +90,7 @@ export default function Music({
   useEffect(() => {
     if (music === null) {
       async function loadMusic() {
-        const current = await fetchMusic();
-        const next = await fetchMusic();
+        const [current, next] = await Promise.all([fetchMusic(), fetchMusic()]);
 
         setMusic(current);
         setNextMusic(next);

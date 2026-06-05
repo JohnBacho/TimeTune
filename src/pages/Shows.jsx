@@ -13,6 +13,7 @@ export default function Show({
   Shows,
   setNextShows,
   nextShows,
+  getToken,
 }) {
   const [error, setError] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
@@ -24,27 +25,11 @@ export default function Show({
 
   let Color = isCorrect === null ? "white" : isCorrect ? "green" : "red";
 
-  let cachedToken = null;
-
-  async function getToken() {
-    if (cachedToken) return cachedToken;
-    const res = await fetch("https://api4.thetvdb.com/v4/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ apikey: import.meta.env.VITE_MY_API_KEY_TV }),
-    });
-    const {
-      data: { token },
-    } = await res.json();
-    cachedToken = token;
-    return token;
-  }
-
   async function fetchShows() {
     try {
       setError(null);
 
-      const randomPage = Math.floor(Math.random() * 70) + 1;
+      const randomPage = Math.floor(Math.random() * 65) + 1;
       const token = await getToken();
       const URL = `https://api4.thetvdb.com/v4/series/filter?country=usa&lang=eng&sort=score&sortType=desc&page=${randomPage}`;
 
@@ -63,6 +48,7 @@ export default function Show({
         let startIndex = Math.floor(Math.random() * data.data.length);
         for (let i = 0; i < data.data.length; i++) {
           const randomShow = data.data[(startIndex + i) % data.data.length];
+          console.log(randomShow);
           if (
             randomShow.image === null ||
             randomShow.year === null ||
@@ -76,6 +62,7 @@ export default function Show({
             name: randomShow.name.replace(/\s*\([^)]*\)/g, ""),
             release_date: randomShow.year,
             poster_path: randomShow.image,
+            rating: randomShow.score,
           };
           return normalizedShow;
         }
@@ -91,8 +78,7 @@ export default function Show({
   useEffect(() => {
     if (Shows === null) {
       async function loadShow() {
-        const current = await fetchShows();
-        const next = await fetchShows();
+        const [current, next] = await Promise.all([fetchShows(), fetchShows()]);
 
         setShows(current);
         setNextShows(next);

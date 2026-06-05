@@ -41,6 +41,21 @@ function SuspenseWithTimeout({ children }) {
     </Suspense>
   );
 }
+let cachedToken = null;
+
+async function getToken() {
+  if (cachedToken) return cachedToken;
+  const res = await fetch("https://api4.thetvdb.com/v4/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ apikey: import.meta.env.VITE_MY_API_KEY_TV }),
+  });
+  const {
+    data: { token },
+  } = await res.json();
+  cachedToken = token;
+  return token;
+}
 
 const styles = {
   wrapper: {
@@ -118,6 +133,7 @@ export default function App() {
                 Shows={Shows}
                 nextShows={nextShows}
                 setNextShows={setNextShows}
+                getToken={getToken}
               />
             }
           />

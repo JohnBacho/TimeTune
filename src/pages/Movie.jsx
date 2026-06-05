@@ -83,8 +83,10 @@ export default function Movie({
   useEffect(() => {
     if (movies == null) {
       async function loadMovie() {
-        const current = await fetchMovies();
-        const next = await fetchMovies();
+        const [current, next] = await Promise.all([
+          fetchMovies(),
+          fetchMovies(),
+        ]);
 
         setMovies(current);
         setNextMovies(next);

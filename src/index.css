@@ -4,3 +4,7 @@
   --Background: #f8f0e3;
   --BoxTextColor: #faf9f6;
 }
+
+html{
+  scroll-behavior: smooth;
+}
