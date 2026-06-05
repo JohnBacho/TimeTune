@@ -7,9 +7,14 @@ import NavBar from "../components/NavBar";
 import "./Media.css";
 import React, { useState, useEffect } from "react";
 
-export default function Movie({ movieScore, setMovieScore }) {
-  const [movies, setMovies] = useState(null);
-  const [nextMovies, setNextMovies] = useState(null);
+export default function Movie({
+  movieScore,
+  setMovieScore,
+  movies,
+  setMovies,
+  nextMovies,
+  setNextMovies,
+}) {
   const [error, setError] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const [fade, setFade] = useState(true);
@@ -76,15 +81,17 @@ export default function Movie({ movieScore, setMovieScore }) {
   }
 
   useEffect(() => {
-    async function loadMovie() {
-      const current = await fetchMovies();
-      const next = await fetchMovies();
+    if (movies == null) {
+      async function loadMovie() {
+        const current = await fetchMovies();
+        const next = await fetchMovies();
 
-      setMovies(current);
-      setNextMovies(next);
+        setMovies(current);
+        setNextMovies(next);
+      }
+      console.log("run")
+      loadMovie();
     }
-
-    loadMovie();
   }, []);
 
   function handleSubmit(event) {

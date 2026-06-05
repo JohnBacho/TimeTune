@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 const Movie = lazy(() => import("./pages/Movie.jsx"));
 const Music = lazy(() => import("./pages/Music.jsx"));
-const Tv = lazy(() => import("./pages/Shows.jsx"));
+const Show = lazy(() => import("./pages/Shows.jsx"));
 
 function PageLoader({ onTimeout }) {
   useEffect(() => {
@@ -64,7 +64,20 @@ const styles = {
 export default function App() {
   const [movieScore, setMovieScore] = useState(0);
   const [musicScore, setMusicScore] = useState(0);
-  const [tvScore, setTvScore] = useState(0);
+  const [ShowScore, setTvScore] = useState(0);
+
+  const [Shows, setShows] = useState(null);
+  const [nextShows, setNextShows] = useState(null);
+
+  const [movies, setMovies] = useState(null);
+  const [nextMovies, setNextMovies] = useState(null);
+
+  const [media, setMedia] = useState(null);
+  const [nextMedia, setNextMedia] = useState(null);
+
+  const [music, setMusic] = useState(null);
+  const [nextMusic, setNextMusic] = useState(null);
+
   return (
     <Router>
       <SuspenseWithTimeout>
@@ -72,18 +85,41 @@ export default function App() {
           <Route
             path="/"
             element={
-              <Movie movieScore={movieScore} setMovieScore={setMovieScore} />
+              <Movie
+                movieScore={movieScore}
+                setMovieScore={setMovieScore}
+                movies={movies}
+                setMovies={setMovies}
+                nextMovies={nextMovies}
+                setNextMovies={setNextMovies}
+              />
             }
           />
           <Route
             path="/music"
             element={
-              <Music musicScore={musicScore} setMusicScore={setMusicScore} />
+              <Music
+                musicScore={musicScore}
+                setMusicScore={setMusicScore}
+                music={music}
+                setMusic={setMusic}
+                nextMusic={nextMusic}
+                setNextMusic={setNextMusic}
+              />
             }
           />
           <Route
             path="/Shows"
-            element={<Tv tvScore={tvScore} settvScore={setTvScore} />}
+            element={
+              <Show
+                ShowScore={ShowScore}
+                setShowScore={setTvScore}
+                setShows={setShows}
+                Shows={Shows}
+                nextShows={nextShows}
+                setNextShows={setNextShows}
+              />
+            }
           />
         </Routes>
       </SuspenseWithTimeout>

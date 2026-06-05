@@ -6,15 +6,22 @@ import NavBar from "../components/NavBar";
 import "./Media.css";
 import React, { useState, useEffect } from "react";
 
-export default function tv({ tvScore, settvScore }) {
-  const [tvs, settvs] = useState(null);
-  const [nexttvs, setNexttvs] = useState(null);
+export default function Show({
+  ShowScore,
+  setShowScore,
+  setShows,
+  Shows,
+  setNextShows,
+  nextShows,
+}) {
   const [error, setError] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const [fade, setFade] = useState(true);
   const [flip, setFlip] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingNext, setIsLoadingNext] = useState(false);
+  const [counter, setCounter] = useState(0);
+
   let Color = isCorrect === null ? "white" : isCorrect ? "green" : "red";
 
   let cachedToken = null;
@@ -33,7 +40,7 @@ export default function tv({ tvScore, settvScore }) {
     return token;
   }
 
-  async function fetchtvs() {
+  async function fetchShows() {
     try {
       setError(null);
 
@@ -55,26 +62,26 @@ export default function tv({ tvScore, settvScore }) {
       if (data.data && data.data.length > 0) {
         let startIndex = Math.floor(Math.random() * data.data.length);
         for (let i = 0; i < data.data.length; i++) {
-          const randomtv = data.data[(startIndex + i) % data.data.length];
+          const randomShow = data.data[(startIndex + i) % data.data.length];
           if (
-            randomtv.image === null ||
-            randomtv.year === null ||
-            randomtv.score < 350 ||
-            randomtv.name === "WWE Superstar Ink"
+            randomShow.image === null ||
+            randomShow.year === null ||
+            randomShow.score < 350 ||
+            randomShow.name === "WWE Superstar Ink"
           ) {
             continue;
           }
-          const normalizedtv = {
-            id: randomtv.id,
-            name: randomtv.name,
-            release_date: randomtv.year,
-            poster_path: randomtv.image,
+          const normalizedShow = {
+            id: randomShow.id,
+            name: randomShow.name,
+            release_date: randomShow.year,
+            poster_path: randomShow.image,
           };
-          return normalizedtv;
+          return normalizedShow;
         }
-        return fetchtvs();
+        return fetchShows();
       } else {
-        return fetchtvs();
+        return fetchShows();
       }
     } catch (err) {
       setError(err.message);
@@ -82,26 +89,29 @@ export default function tv({ tvScore, settvScore }) {
   }
 
   useEffect(() => {
-    async function loadtv() {
-      const current = await fetchtvs();
-      const next = await fetchtvs();
+    if (Shows === null) {
+      async function loadShow() {
+        const current = await fetchShows();
+        const next = await fetchShows();
 
-      settvs(current);
-      setNexttvs(next);
+        setShows(current);
+        setNextShows(next);
+      }
+
+      loadShow();
+      console.log("ran");
     }
-
-    loadtv();
   }, []);
 
   function handleSubmit(event) {
     event.preventDefault();
     setIsSubmitting(true);
     const inputValue = event.target.elements[0].value.trim();
-    const isCorrect = tvs.release_date === inputValue;
+    const isCorrect = Shows.release_date === inputValue;
 
     if (isCorrect) {
       setIsCorrect(true);
-      settvScore((prev) => prev + 1);
+      setShowScore((prev) => prev + 1);
     } else {
       setIsCorrect(false);
     }
@@ -113,53 +123,53 @@ export default function tv({ tvScore, settvScore }) {
     }, 2500);
 
     setTimeout(async () => {
-      if (!nexttvs) {
+      if (!nextShows) {
         setIsLoadingNext(true);
         return;
       }
       setFade(true);
       setIsCorrect(null);
-      settvs(nexttvs);
-      setNexttvs(null);
+      setShows(nextShows);
+      setNextShows(null);
       event.target.reset();
       setIsSubmitting(false);
 
-      const fresh = await fetchtvs();
-      setNexttvs(fresh);
+      const fresh = await fetchShows();
+      setNextShows(fresh);
     }, 3000);
   }
 
   useEffect(() => {
-    if (isLoadingNext && nexttvs) {
+    if (isLoadingNext && nextShows) {
       setIsLoadingNext(false);
       setFade(true);
       setIsCorrect(null);
-      settvs(nexttvs);
-      setNexttvs(null);
+      setShows(nextShows);
+      setNextShows(null);
       setIsSubmitting(false);
 
-      fetchtvs().then(setNexttvs);
+      fetchShows().then(setNextShows);
     }
-  }, [nexttvs, isLoadingNext]);
+  }, [nextShows, isLoadingNext]);
 
   if (error) return <p>Error: {error}</p>;
-  if (!tvs) return <Spinner />;
+  if (!Shows) return <Spinner />;
 
   return (
     <div className="App">
       <div
         className={"bg-layer " + (fade ? "fade-in" : "fade-out")}
         style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url(${tvs.poster_path})`,
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url(${Shows.poster_path})`,
         }}
       />
 
       <div className="content">
         <NavBar />
-        <Score score={tvScore} />
-        <div key={tvs.id}>
+        <Score score={ShowScore} />
+        <div key={Shows.id}>
           <MediaSection
-            media={tvs}
+            media={Shows}
             fade={fade}
             flip={flip}
             isCorrect={isCorrect}

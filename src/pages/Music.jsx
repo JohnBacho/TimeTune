@@ -7,9 +7,14 @@ import NavBar from "../components/NavBar";
 import "./Media.css";
 import React, { useState, useEffect, useRef } from "react";
 
-export default function Music({ musicScore, setMusicScore }) {
-  const [media, setMedia] = useState(null);
-  const [nextMedia, setNextMedia] = useState(null);
+export default function Music({
+  musicScore,
+  setMusicScore,
+  music,
+  setMusic,
+  nextMusic,
+  setNextMusic,
+}) {
   const [error, setError] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const [fade, setFade] = useState(true);
@@ -83,22 +88,24 @@ export default function Music({ musicScore, setMusicScore }) {
   }
 
   useEffect(() => {
-    async function loadMusic() {
-      const current = await fetchMusic();
-      const next = await fetchMusic();
+    if (music === null) {
+      async function loadMusic() {
+        const current = await fetchMusic();
+        const next = await fetchMusic();
 
-      setMedia(current);
-      setNextMedia(next);
+        setMusic(current);
+        setNextMusic(next);
+      }
+
+      loadMusic();
     }
-
-    loadMusic();
   }, []);
 
   function handleSubmit(event) {
     event.preventDefault();
     setIsSubmitting(true);
     const inputValue = event.target.elements[0].value.trim();
-    const year = media?.release_date?.toString();
+    const year = music?.release_date?.toString();
 
     const correct = year === inputValue;
 
@@ -117,37 +124,37 @@ export default function Music({ musicScore, setMusicScore }) {
       setFlip(false);
     }, 2500);
     setTimeout(async () => {
-      if (!nextMedia) {
+      if (!nextMusic) {
         setIsLoadingNext(true);
         return;
       }
       setFade(true);
       setIsCorrect(null);
-      setMedia(nextMedia);
+      setMusic(nextMusic);
       event.target.reset();
       setIsSubmitting(false);
       const freshAlbum = await fetchMusic();
-      setNextMedia(freshAlbum);
+      setNextMusic(freshAlbum);
     }, 3000);
   }
 
   useEffect(() => {
-    if (isLoadingNext && nextMedia) {
+    if (isLoadingNext && nextMusic) {
       setIsLoadingNext(false);
       setFade(true);
       setIsCorrect(null);
-      setMedia(nextMedia);
-      setNextMedia(null);
+      setMusic(nextMusic);
+      setNextMusic(null);
       setIsSubmitting(false);
 
-      fetchMusic().then(setNextMedia);
+      fetchMusic().then(setNextMusic);
     }
-  }, [nextMedia, isLoadingNext]);
+  }, [nextMusic, isLoadingNext]);
 
   if (error) return <p>Error: {error}</p>;
-  if (!media) return <Spinner />;
+  if (!music) return <Spinner />;
 
-  const imageUrl = media.poster_path;
+  const imageUrl = music.poster_path;
 
   return (
     <div className="App">
@@ -163,9 +170,9 @@ export default function Music({ musicScore, setMusicScore }) {
       <div className="content">
         <NavBar />
         <Score score={musicScore} />
-        <div key={media.id}>
+        <div key={music.id}>
           <MediaSection
-            media={media}
+            media={music}
             fade={fade}
             flip={flip}
             isCorrect={isCorrect}
