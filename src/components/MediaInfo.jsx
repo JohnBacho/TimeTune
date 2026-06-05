@@ -3,16 +3,20 @@ export default function MediaInfo({ media, isMovie }) {
   let formatRating = null;
   isMovie
     ? (formatRating =
-        media?.rating != null
+        media.rating < 1000
           ? media.rating.toString().trim().slice(0, 3)
-          : null)
+          : (media.rating / 1000)
+              .toString()
+              .trim()
+              .slice(0, 3)
+              .replace(".", "") + "k")
     : (formatRating = media.artist);
   return (
     <div
       className="movie-info"
       style={
         isMovie
-          ? { flexDirection: "row", gap: "20px" }
+          ? { flexDirection: "row", columnGap: "20px" }
           : { flexDirection: "column", gap: "0px" }
       }
     >

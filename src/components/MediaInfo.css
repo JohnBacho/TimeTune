@@ -5,6 +5,9 @@
   margin-bottom: 40px;
   justify-content: center;
   text-wrap: pretty;
+  flex-wrap: wrap;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .movie-info > h3 {

@@ -48,10 +48,10 @@ export default function Show({
         let startIndex = Math.floor(Math.random() * data.data.length);
         for (let i = 0; i < data.data.length; i++) {
           const randomShow = data.data[(startIndex + i) % data.data.length];
-          console.log(randomShow);
           if (
             randomShow.image === null ||
             randomShow.year === null ||
+            randomShow.year === "" ||
             randomShow.score < 350 ||
             randomShow.name === "WWE Superstar Ink"
           ) {

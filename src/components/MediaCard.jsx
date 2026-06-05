@@ -29,7 +29,7 @@ export default function MediaCard({ media, flip, isCorrect, isMovie }) {
         className={`flip-card ${flip ? "flip-in" : ""}`}
         style={{
           ...(isMovie
-            ? { aspectRatio: "2 / 3", height: "58vh"}
+            ? { aspectRatio: "2 / 3", height: "120vw", maxHeight: "58vh" }
             : { aspectRatio: "1 / 1", width: "90vw", maxWidth: "450px" }),
           transform: flip ? "" : "rotateY(0deg)",
         }}
