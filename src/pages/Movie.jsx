@@ -89,7 +89,6 @@ export default function Movie({
         setMovies(current);
         setNextMovies(next);
       }
-      console.log("run")
       loadMovie();
     }
   }, []);

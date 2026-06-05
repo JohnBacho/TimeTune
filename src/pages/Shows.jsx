@@ -73,7 +73,7 @@ export default function Show({
           }
           const normalizedShow = {
             id: randomShow.id,
-            name: randomShow.name,
+            name: randomShow.name.replace(/\s*\([^)]*\)/g, ""),
             release_date: randomShow.year,
             poster_path: randomShow.image,
           };
@@ -99,7 +99,6 @@ export default function Show({
       }
 
       loadShow();
-      console.log("ran");
     }
   }, []);
 
