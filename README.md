@@ -1,18 +1,36 @@
-# React + Vite
+# Time Tune
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Time Tune is a media trivia web application built entirely with React that challenges players to guess the release year of movies, TV shows, and music albums.
 
-Currently, two official plugins are available:
+The app uses real-time data from the TMDB, TVDB, and TheAudioDB APIs to create a dynamic and replayable trivia experience with constantly changing content.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+* Movie, TV, and music trivia
+* Real-time API integration
+* Responsive React UI
+* Asynchronous data fetching
+* State management with React hooks
+* Media preloading and caching for smoother gameplay
+* Fast transitions between trivia questions
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+## Tech Stack
 
-Note: This will impact Vite dev & build performances.
+* React
+* JavaScript
+* TMDB API
+* TVDB API
+* TheAudioDB API
+* CSS Modules
 
-## Expanding the ESLint configuration
+## Development Focus
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+This project emphasized:
+
+* Asynchronous programming
+* API integration
+* Performance optimization
+* State management
+* Responsive design
+
+A major focus was improving user experience through media preloading and caching to reduce loading times and create smoother gameplay transitions.
