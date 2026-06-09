@@ -148,12 +148,17 @@ export default function Movie({
     }
   }, [nextMovies, isLoadingNext]);
 
+  useEffect(() => {
+    if (nextMovies?.poster_path) {
+      const img = new Image();
+      img.src = nextMovies.poster_path;
+    }
+  }, [nextMovies]);
+
   if (error) return <p>Error: {error}</p>;
   if (!movies) return <Spinner />;
 
-  const imageUrl = movies.poster_path
-    ? `https://image.tmdb.org/t/p/w500${movies.poster_path}`
-    : "";
+  const imageUrl = movies.poster_path ?? "";
 
   return (
     <div className="App">

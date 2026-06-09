@@ -50,7 +50,7 @@ export default function Show({
           const randomShow = data.data[(startIndex + i) % data.data.length];
           if (
             randomShow.image === null ||
-            randomShow.year === null ||
+            randomShow.year?.length != 4 ||
             randomShow.year === "" ||
             randomShow.score < 350 ||
             randomShow.name === "WWE Superstar Ink"
@@ -136,6 +136,13 @@ export default function Show({
       fetchShows().then(setNextShows);
     }
   }, [nextShows, isLoadingNext]);
+
+  useEffect(() => {
+    if (nextShows?.poster_path) {
+      const img = new Image();
+      img.src = nextShows.poster_path;
+    }
+  }, [nextShows]);
 
   if (error) return <p>Error: {error}</p>;
   if (!Shows) return <Spinner />;

@@ -45,8 +45,7 @@ export default function Music({
           const randomAlbum = data.album[(startIndex + i) % data.album.length];
           if (
             calculatePopularityScore(randomAlbum) < 50 ||
-            randomAlbum.intYearReleased == 0 ||
-            randomAlbum.intYearReleased == null ||
+            randomAlbum.intYearReleased.length != 4 ||
             !randomAlbum.strAlbumThumb
           ) {
             continue;
@@ -99,6 +98,13 @@ export default function Music({
       loadMusic();
     }
   }, []);
+
+  useEffect(() => {
+    if (nextMusic?.poster_path) {
+      const img = new Image();
+      img.src = nextMusic.poster_path;
+    }
+  }, [nextMusic]);
 
   function handleSubmit(event) {
     event.preventDefault();
