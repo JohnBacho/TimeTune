@@ -26,47 +26,59 @@ export default function App() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    async function loadMovies() {
-      try {
-        const [current, next] = await Promise.all([
-          fetchMovies(),
-          fetchMovies(),
-        ]);
-        setMovies(current);
-        setNextMovies(next);
-      } catch (err) {
-        setError(err.message);
+    if (movies === null) {
+      async function loadMovies() {
+        try {
+          const [current, next] = await Promise.all([
+            fetchMovies(),
+            fetchMovies(),
+          ]);
+          setMovies(current);
+          setNextMovies(next);
+        } catch (err) {
+          setError(err.message);
+        }
       }
+      loadMovies();
     }
-    loadMovies();
   }, []);
 
   useEffect(() => {
     if (movies === null) return;
-    async function loadShows() {
-      try {
-        const [current, next] = await Promise.all([fetchShows(), fetchShows()]);
-        setShows(current);
-        setNextShows(next);
-      } catch (err) {
-        setError(err.message);
+    if (Shows === null) {
+      async function loadShows() {
+        try {
+          const [current, next] = await Promise.all([
+            fetchShows(),
+            fetchShows(),
+          ]);
+          setShows(current);
+          setNextShows(next);
+        } catch (err) {
+          setError(err.message);
+        }
       }
+      loadShows();
     }
-    loadShows();
   }, [movies]);
 
   useEffect(() => {
     if (movies === null) return;
-    async function loadMusic() {
-      try {
-        const [current, next] = await Promise.all([fetchMusic(), fetchMusic()]);
-        setMusic(current);
-        setNextMusic(next);
-      } catch (err) {
-        setError(err.message);
+    if (music == null) {
+      async function loadMusic() {
+        try {
+          const [current, next] = await Promise.all([
+            fetchMusic(),
+            fetchMusic(),
+          ]);
+          setMusic(current);
+          setNextMusic(next);
+        } catch (err) {
+          setError(err.message);
+        }
       }
+      loadMusic();
     }
-    loadMusic();
   }, [movies]);
 
   return (
