@@ -1,6 +1,6 @@
 import "./MediaCard.css";
 import confetti from "canvas-confetti";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function MediaCard({ media, flip, isCorrect, isMovie }) {
   const hasFired = useRef(false);

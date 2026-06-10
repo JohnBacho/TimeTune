@@ -33,6 +33,12 @@ export default function App() {
             fetchMovies(),
             fetchMovies(),
           ]);
+          await new Promise((resolve) => {
+            const img = new Image();
+            img.onload = resolve;
+            img.onerror = resolve;
+            img.src = current.poster_path;
+          });
           setMovies(current);
           setNextMovies(next);
         } catch (err) {
@@ -52,6 +58,12 @@ export default function App() {
             fetchShows(),
             fetchShows(),
           ]);
+          await new Promise((resolve) => {
+            const img = new Image();
+            img.onload = resolve;
+            img.onerror = resolve;
+            img.src = current.poster_path;
+          });
           setShows(current);
           setNextShows(next);
         } catch (err) {
@@ -71,6 +83,12 @@ export default function App() {
             fetchMusic(),
             fetchMusic(),
           ]);
+          await new Promise((resolve) => {
+            const img = new Image();
+            img.onload = resolve;
+            img.onerror = resolve;
+            img.src = current.poster_path;
+          });
           setMusic(current);
           setNextMusic(next);
         } catch (err) {
