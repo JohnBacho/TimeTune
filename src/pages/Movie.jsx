@@ -14,86 +14,14 @@ export default function Movie({
   setMovies,
   nextMovies,
   setNextMovies,
+  fetchMovies,
 }) {
-  const [error, setError] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const [fade, setFade] = useState(true);
   const [flip, setFlip] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingNext, setIsLoadingNext] = useState(false);
   let Color = isCorrect === null ? "white" : isCorrect ? "green" : "red";
-
-  const API_TOKEN = import.meta.env.VITE_MY_API_KEY;
-
-  async function fetchMovies() {
-    try {
-      setError(null);
-      var vaildMovie = false;
-
-      const randomPage = Math.floor(Math.random() * 500) + 1;
-
-      const URL = `https://api.themoviedb.org/3/discover/movie?language=en-US&page=${randomPage}&include_adult=false`;
-      const response = await fetch(URL, {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${API_TOKEN}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (data.results && data.results.length > 0) {
-        let startIndex = Math.floor(Math.random() * data.results.length);
-        for (let i = 0; i < data.results.length; i++) {
-          const randomMovie =
-            data.results[(startIndex + i) % data.results.length];
-
-          if (
-            randomMovie.adult === true ||
-            randomMovie.softcore === true ||
-            randomMovie.vote_count < 350
-          ) {
-            continue;
-          } else {
-            const normalizedMovie = {
-              id: randomMovie.id,
-              name: randomMovie.title,
-              release_date: randomMovie.release_date.trim().slice(0, 4),
-              poster_path:
-                "https://image.tmdb.org/t/p/w500" + randomMovie.poster_path,
-              rating: randomMovie.vote_average,
-            };
-            return normalizedMovie;
-          }
-        }
-        return fetchMovies();
-      } else {
-        return fetchMovies();
-      }
-    } catch (err) {
-      setError(err.message);
-    }
-  }
-
-  useEffect(() => {
-    if (movies == null) {
-      async function loadMovie() {
-        const [current, next] = await Promise.all([
-          fetchMovies(),
-          fetchMovies(),
-        ]);
-
-        setMovies(current);
-        setNextMovies(next);
-      }
-      loadMovie();
-    }
-  }, []);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -155,7 +83,6 @@ export default function Movie({
     }
   }, [nextMovies]);
 
-  if (error) return <p>Error: {error}</p>;
   if (!movies) return <Spinner />;
 
   const imageUrl = movies.poster_path ?? "";
